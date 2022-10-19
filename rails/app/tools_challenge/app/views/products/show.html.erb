@@ -1,0 +1,32 @@
+<h1>Visualizar Produto</h1>
+
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>SKU:</strong>
+  <%= @product.SKU %>
+</p>
+
+<p>
+  <strong>Nome:</strong>
+  <%= @product.name %>
+</p>
+
+<p>
+  <strong>Descrição:</strong>
+  <%= @product.description %>
+</p>
+
+<p>
+  <strong>Quantidade:</strong>
+  <%= @product.quantity %>
+</p>
+
+<p>
+  <strong>Preço:</strong>
+  <%= @product.price %>
+</p>
+
+<%= link_to 'Editar', edit_product_path(@product) %> |
+<%= link_to 'Voltar', products_path %>

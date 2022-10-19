@@ -1,0 +1,35 @@
+<h1>Lista de produtos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>SKU</th>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Quantidade</th>
+      <th>Preço</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= product.SKU %></td>
+        <td><%= product.name %></td>
+        <td><%= product.description %></td>
+        <td><%= product.quantity %></td>
+        <td><%= product.price %></td>
+        <td><%= link_to 'Visualizar', product %></td>
+        <td><%= link_to 'Editar', edit_product_path(product) %></td>
+        <td><%= link_to 'Remover', product, method: :delete, data: { confirm: 'Tem certeza que deseja remover?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'Novo Produto', new_product_path %>
