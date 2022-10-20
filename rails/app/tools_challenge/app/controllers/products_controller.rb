@@ -4,7 +4,15 @@ class ProductsController < ApplicationController
   # GET /products
   # GET /products.json
   def index
-    @products = Product.all
+    search_text = params[:search]
+
+    if search_text.present?
+      @products = Product.any_of({ :SKU => /.*#{search_text}.*/i }, 
+                                 { :name => /.*#{search_text}.*/i }, 
+                                 { :description => /.*#{search_text}.*/i })
+    else
+      @products = Product.all
+    end
   end
 
   # GET /products/1
