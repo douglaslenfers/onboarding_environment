@@ -2,35 +2,87 @@ require 'rails_helper'
 
 RSpec.describe ProductsController, :type => :controller do
     context "GET #index" do
-        it "should success and render to index page" do
+        let(:subject) { build(:product) }
+
+        it "should success and render index page" do
             get :index
             expect(response).to have_http_status(200)
             expect(response).to render_template(:index)
         end
 
-        it "should bring empty array" do
-            get :index
-            expect(assigns(:products)).to be_empty
-        end
-
         it "should have one product" do
-            product = Product.new(SKU: "ABCD123EF", name: "Primeiro Produto", description: "Descrição Produto", quantity: 5, price: 10.5)
             get :index
-            expect(assigns(:products)).to_not be_empty
+            expect(:products).to_not be_empty
         end
     end
 
     context "GET #show" do
-        let(:product) { Product.new(SKU: "ABCD123EF", name: "Primeiro Produto", description: "Descrição Produto", quantity: 5, price: 10.5) }
+        let(:subject) { build(:product) }
+
         it "should success and render show page" do
-            get :show, params: { id: product.id }
+            get :show, :id => subject.id
             expect(response).to have_http_status(200)
             expect(response).to render_template(:show)
         end
+    end
 
-        it "where have id" do
-            get :show, params: { id: product.id }
-            expect(assigns(:product)).to_not be_empty
+    context "GET #new" do
+        it "should success and render new page" do
+            get :new
+            expect(response).to have_http_status(200)
+            expect(response).to render_template(:new)
+        end
+    end
+
+    context "GET #edit" do
+        let(:subject) { build(:product) }
+
+        it "should success and render edit page" do
+            get :edit, :id => "63502db08284b100b6000000"
+            expect(response).to have_http_status(200)
+            expect(response).to render_template(:edit)
+        end
+        it "should not render edit page without id" do
+            get :edit, :id => ""
+            expect(response).to_not render_template(:edit)
+        end
+    end
+
+    context "POST #create" do
+        it "should success create and render new page" do
+            post :create, product: { SKU: "ABCD123EF", name: "Primeiro Produto", description: "Descrição Produto", quantity: 5, price: 10.5 }
+            expect(response).to have_http_status(200)
+            expect(response).to render_template(:new)
+        end
+    end
+
+    context "PATCH #update" do
+        let(:subject) { build(:product) }
+
+        it "should success update and render update page" do
+            patch :update, id: subject.id, product: { SKU: "BBB222CCC" }
+            expect(response).to have_http_status(200)
+            expect(response).to render_template(:index)
+        end
+    end
+
+    describe 'DELETE #destroy' do
+        let(:subject) { build(:product) }
+
+        it 'should remove the requested product' do
+            subject.save
+            params = { id: subject.id }
+            expect do
+                delete :destroy, params
+            end.to change(Product, :count).by(-1)
+            expect(response).to have_http_status(200)
+            expect(response).to redirect_to(:index)
+        end
+
+        it 'should not remove product without id' do
+            params = { id: " " }
+            delete :destroy, params
+            expect(response).to_not redirect_to(:index)
         end
     end
 end
