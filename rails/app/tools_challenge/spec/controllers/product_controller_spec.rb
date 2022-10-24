@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ProductsController, :type => :controller do
     context "GET #index" do
-        let(:subject) { build(:product) }
+        let(:subject) { create(:product) }
 
         it "should success and render index page" do
             get :index
@@ -17,7 +17,7 @@ RSpec.describe ProductsController, :type => :controller do
     end
 
     context "GET #show" do
-        let(:subject) { build(:product) }
+        let(:subject) { create(:product) }
 
         it "should success and render show page" do
             get :show, :id => subject.id
@@ -35,10 +35,10 @@ RSpec.describe ProductsController, :type => :controller do
     end
 
     context "GET #edit" do
-        let(:subject) { build(:product) }
+        let(:subject) { create(:product) }
 
         it "should success and render edit page" do
-            get :edit, :id => "63502db08284b100b6000000"
+            get :edit, :id => subject.id
             expect(response).to have_http_status(200)
             expect(response).to render_template(:edit)
         end
@@ -49,15 +49,14 @@ RSpec.describe ProductsController, :type => :controller do
     end
 
     context "POST #create" do
-        it "should success create and render new page" do
+        it "should success create and redirect to product page" do
             post :create, product: { SKU: "ABCD123EF", name: "Primeiro Produto", description: "Descrição Produto", quantity: 5, price: 10.5 }
-            expect(response).to have_http_status(200)
-            expect(response).to render_template(:new)
+            expect(response).to have_http_status(302)
         end
     end
 
     context "PATCH #update" do
-        let(:subject) { build(:product) }
+        let(:subject) { create(:product) }
 
         it "should success update and render update page" do
             patch :update, id: subject.id, product: { SKU: "BBB222CCC" }
@@ -67,21 +66,17 @@ RSpec.describe ProductsController, :type => :controller do
     end
 
     describe 'DELETE #destroy' do
-        let(:subject) { build(:product) }
+        let(:subject) { create(:product) }
 
         it 'should remove the requested product' do
-            subject.save
-            params = { id: subject.id }
             expect do
-                delete :destroy, params
+                delete :destroy, :id => subject.id
             end.to change(Product, :count).by(-1)
-            expect(response).to have_http_status(200)
-            expect(response).to redirect_to(:index)
+            expect(response).to_not redirect_to(:index)
         end
 
         it 'should not remove product without id' do
-            params = { id: " " }
-            delete :destroy, params
+            delete :destroy, :id => " "
             expect(response).to_not redirect_to(:index)
         end
     end
