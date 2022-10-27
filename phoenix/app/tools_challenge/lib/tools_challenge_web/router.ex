@@ -16,7 +16,8 @@ defmodule ToolsChallengeWeb.Router do
   scope "/", ToolsChallengeWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", ProductController, :index
+    resources "/products", ProductController
   end
 
   # Other scopes may use custom stacks.
