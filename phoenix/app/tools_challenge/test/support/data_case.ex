@@ -28,11 +28,11 @@ defmodule ToolsChallenge.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ToolsChallenge.Repo)
+    #:ok = Ecto.Adapters.SQL.Sandbox.checkout(ToolsChallenge.Repo)
 
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(ToolsChallenge.Repo, {:shared, self()})
-    end
+    #unless tags[:async] do
+    #  Ecto.Adapters.SQL.Sandbox.mode(ToolsChallenge.Repo, {:shared, self()})
+    #end
 
     :ok
   end

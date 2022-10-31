@@ -16,8 +16,12 @@ defmodule ToolsChallenge.Products.Product do
 
   @doc false
   def changeset(product, attrs) do
+    id = product.id
+
     product
     |> cast(attrs, [:sku, :name, :description, :quantity, :price])
-    |> validate_required([:sku, :name, :description, :quantity, :price])
+    |> validate_required([:sku, :name])
+    |> validate_number([:quantity, :price], greater_than: 0)
+    |> validate_length(:description, max: 255)
   end
 end
