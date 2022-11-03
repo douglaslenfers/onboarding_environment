@@ -4,18 +4,13 @@ defmodule ToolsChallenge.Products do
   """
 
   import Ecto.Query, warn: false
-  alias ToolsChallenge.Repo
+  import Exredis
 
+  alias ToolsChallenge.Repo
   alias ToolsChallenge.Products.Product
 
   @doc """
   Returns the list of products.
-
-  ## Examples
-
-      iex> list_products()
-      [%Product{}, ...]
-
   """
   def list_products(search_text) do
     if search_text != nil do
@@ -33,29 +28,24 @@ defmodule ToolsChallenge.Products do
   Gets a single product.
 
   Raises `Ecto.NoResultsError` if the Product does not exist.
-
-  ## Examples
-
-      iex> get_product!(123)
-      %Product{}
-
-      iex> get_product!(456)
-      ** (Ecto.NoResultsError)
-
   """
-  def get_product!(id), do: Repo.get!(Product, id)
+  def get_product!(id) do
+    case get_product(id) do
+      {:ok, product} ->
+        product
+
+      {:error, :not_found} ->
+        product = Repo.get!(Product, id)
+        set_product(id, product)
+        product
+
+      _ ->
+        Repo.get!(Product, id)
+    end
+  end
 
   @doc """
   Creates a product.
-
-  ## Examples
-
-      iex> create_product(%{field: value})
-      {:ok, %Product{}}
-
-      iex> create_product(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def create_product(attrs \\ %{}) do
     %Product{}
@@ -65,15 +55,6 @@ defmodule ToolsChallenge.Products do
 
   @doc """
   Updates a product.
-
-  ## Examples
-
-      iex> update_product(product, %{field: new_value})
-      {:ok, %Product{}}
-
-      iex> update_product(product, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def update_product(%Product{} = product, attrs) do
     product
@@ -83,15 +64,6 @@ defmodule ToolsChallenge.Products do
 
   @doc """
   Deletes a product.
-
-  ## Examples
-
-      iex> delete_product(product)
-      {:ok, %Product{}}
-
-      iex> delete_product(product)
-      {:error, %Ecto.Changeset{}}
-
   """
   def delete_product(%Product{} = product) do
     Repo.delete(product)
@@ -99,14 +71,20 @@ defmodule ToolsChallenge.Products do
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking product changes.
-
-  ## Examples
-
-      iex> change_product(product)
-      %Ecto.Changeset{data: %Product{}}
-
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
+  end
+
+  defp set_product(id, product) do
+    {:ok, client} = Exredis.start_link
+    client |> Exredis.query ["SET", id, product]
+    client |> Exredis.stop
+  end
+
+  defp get_product(id) do
+    {:ok, client} = Exredis.start_link
+    client |> Exredis.query ["GET", id]
+    client |> Exredis.stop
   end
 end

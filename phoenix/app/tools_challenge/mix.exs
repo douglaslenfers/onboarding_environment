@@ -43,7 +43,9 @@ defmodule ToolsChallenge.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:ecto, "~> 2.0.0", github: "elixir-ecto/ecto", ref: "v2.0", override: true},
       {:mongodb_ecto, github: "michalmuskala/mongodb_ecto", branch: "ecto-2"},
-      {:mime, "~> 1.6"}
+      {:mime, "~> 1.6"},
+      {:redis, "~> 0.1"},
+      {:exredis, ">= 0.2.4"}
     ]
   end
 
