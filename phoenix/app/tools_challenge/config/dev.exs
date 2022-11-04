@@ -28,6 +28,8 @@ config :tools_challenge, ToolsChallengeWeb.Endpoint,
     ]
   ]
 
+config :tools_challenge, ToolsChallenge.Elasticsearch, index: "app"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
@@ -72,3 +74,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :tirexs, :uri, "http://127.0.0.1:9200"

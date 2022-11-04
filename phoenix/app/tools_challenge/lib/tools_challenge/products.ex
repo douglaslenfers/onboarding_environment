@@ -8,19 +8,29 @@ defmodule ToolsChallenge.Products do
 
   alias ToolsChallenge.Repo
   alias ToolsChallenge.Products.Product
+  alias ToolsChallenge.Services.Elasticsearch
 
   @doc """
   Returns the list of products.
   """
   def list_products(search_text) do
-    if search_text != nil do
-      regex = Mongo.Ecto.Helpers.regex(search_text, "i")
-      query = from p in Product,
-                where: fragment(sku: ^regex)
+    case search_elasticsearch(search_text) do
+      {:ok, products_list} ->
+        products_list
 
-      Repo.all(query)
-    else
-      Repo.all(Product)
+      :ok ->
+        []
+
+      _ ->
+        if search_text != nil do
+          regex = Mongo.Ecto.Helpers.regex(search_text, "i")
+            query = from p in Product,
+                      where: fragment(sku: ^regex)
+
+            Repo.all(query)
+        else
+          Repo.all(Product)
+        end
     end
   end
 
@@ -48,24 +58,35 @@ defmodule ToolsChallenge.Products do
   Creates a product.
   """
   def create_product(attrs \\ %{}) do
-    %Product{}
-    |> Product.changeset(attrs)
-    |> Repo.insert()
+    with product_changeset <- Product.changeset(%Product{}, attrs),
+         {:ok, product} <- Repo.insert(product_changeset),
+         {:ok, :created} <- post_elasticsearch(product) do
+      {:ok, product}
+    else
+      error -> error
+    end
   end
 
   @doc """
   Updates a product.
   """
   def update_product(%Product{} = product, attrs) do
-    product
-    |> Product.changeset(attrs)
-    |> Repo.update()
+    with product_changeset <- Product.changeset(product, attrs),
+         {:ok, updated_product} <- Repo.update(product_changeset),
+         updated_attrs <- Product.get_attrs(updated_product),
+         :ok <- update_elasticsearch(updated_attrs) do
+      {:ok, updated_product}
+    else
+      error ->
+        error
+    end
   end
 
   @doc """
   Deletes a product.
   """
   def delete_product(%Product{} = product) do
+    delete_elasticsearch(product)
     Repo.delete(product)
   end
 
@@ -86,5 +107,25 @@ defmodule ToolsChallenge.Products do
     {:ok, client} = Exredis.start_link
     client |> Exredis.query ["GET", id]
     client |> Exredis.stop
+  end
+
+  defp search_elasticsearch([{_key, _value} | _] = filters) do
+    Elasticsearch.search("products", filters)
+  end
+
+  defp search_elasticsearch(_) do
+    Elasticsearch.list("products")
+  end
+
+  defp post_elasticsearch(product) do
+    Elasticsearch.post("products", Product.get_attrs(product))
+  end
+
+  defp update_elasticsearch(updated_product) do
+    Elasticsearch.update("products", "id", updated_product.id, updated_product)
+  end
+
+  defp delete_elasticsearch(%Product{} = product) do
+    Elasticsearch.delete("products", "id", product.id)
   end
 end

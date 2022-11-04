@@ -17,3 +17,5 @@ config :tools_challenge, ToolsChallengeWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :tools_challenge, ToolsChallenge.Elasticsearch, index: "app_test"

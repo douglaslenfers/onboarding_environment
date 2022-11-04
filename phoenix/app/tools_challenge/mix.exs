@@ -20,7 +20,7 @@ defmodule ToolsChallenge.MixProject do
   def application do
     [
       mod: {ToolsChallenge.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto, :tirexs]
     ]
   end
 
@@ -45,7 +45,8 @@ defmodule ToolsChallenge.MixProject do
       {:mongodb_ecto, github: "michalmuskala/mongodb_ecto", branch: "ecto-2"},
       {:mime, "~> 1.6"},
       {:redis, "~> 0.1"},
-      {:exredis, ">= 0.2.4"}
+      {:exredis, ">= 0.2.4"},
+      {:tirexs, "~> 0.8"}
     ]
   end
 
