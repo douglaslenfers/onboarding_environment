@@ -21,7 +21,17 @@ defmodule ToolsChallenge.Products.Product do
     product
     |> cast(attrs, [:sku, :name, :description, :quantity, :price])
     |> validate_required([:sku, :name])
-    |> validate_number([:quantity, :price], greater_than: 0)
     |> validate_length(:description, max: 255)
+  end
+
+  def get_attrs(product) do
+    %{
+      id: product.id,
+      sku: product.sku,
+      name: product.name,
+      description: product.description,
+      quantity: product.quantity,
+      price: product.price
+    }
   end
 end

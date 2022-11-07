@@ -16,7 +16,9 @@ defmodule ToolsChallenge.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: ToolsChallenge.PubSub},
       # Start the Endpoint (http/https)
-      ToolsChallengeWeb.Endpoint
+      ToolsChallengeWeb.Endpoint,
+      # Start Redis Server Supervisor
+      ToolsChallenge.Cache.RedisSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
