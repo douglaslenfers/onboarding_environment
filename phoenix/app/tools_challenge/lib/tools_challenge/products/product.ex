@@ -23,4 +23,15 @@ defmodule ToolsChallenge.Products.Product do
     |> validate_required([:sku, :name])
     |> validate_length(:description, max: 255)
   end
+
+  def get_attrs(product) do
+    %{
+      id: product.id,
+      sku: product.sku,
+      name: product.name,
+      description: product.description,
+      quantity: product.quantity,
+      price: product.price
+    }
+  end
 end
