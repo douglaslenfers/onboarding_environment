@@ -68,12 +68,10 @@ defmodule ToolsChallenge.Products do
   Updates a product.
   """
   def update_product(%Product{} = product, attrs) do
-    product_changeset = Product.changeset(product, attrs)
-    updated_product = Repo.update(product_changeset)
-    updated_attrs = Product.get_attrs(updated_product)
-    with :ok <- update_elasticsearch(updated_attrs) do
-      {:ok, updated_product}
-    end
+    Product.changeset(product, attrs)
+    |> Repo.update()
+    |> Product.get_attrs()
+    |> update_elasticsearch()
   end
 
   @doc """
