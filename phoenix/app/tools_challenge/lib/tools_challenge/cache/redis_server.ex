@@ -12,5 +12,5 @@ defmodule ToolsChallenge.Cache.RedisServer do
 
   def terminate(_reason, conn), do: Exredis.stop(conn)
 
-  def call_query(args), do: GenServer.call(__MODULE__, {:query, args})
+  def call_query(args), do: GenServer.cast(__MODULE__, {:query, args})
 end

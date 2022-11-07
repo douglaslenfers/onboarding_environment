@@ -34,21 +34,14 @@ defmodule ToolsChallenge.Services.Elasticsearch do
   end
 
   def delete(document, key, value) do
-    with els_id <- find_els_id(document, key, value),
-         {:ok, 200, details} <- tirexs_delete_by_els_id(document, els_id) do
-      format_response({:ok, 200, details})
-    else
-      error -> {:error, error}
-    end
+    els_id = find_els_id(document, key, value)
+    details = tirexs_delete_by_els_id(document, els_id)
+    format_response({:ok, 200, details})
   end
 
   def update(document, key, value, new_data) do
-    with els_id <- find_els_id(document, key, value),
-         {:ok, _status, _details} <- tirexs_update_by_els_id(document, els_id, new_data) do
-      :ok
-    else
-      error -> {:error, error}
-    end
+    els_id = find_els_id(document, key, value)
+    tirexs_update_by_els_id(document, els_id, new_data)
   end
 
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
@@ -64,12 +57,10 @@ defmodule ToolsChallenge.Services.Elasticsearch do
     do: Enum.map(hits_list, & &1[:_id])
 
   defp find_els_id(document, key, value) do
-    with search_result <- tirexs_search(document, [{key, value}]),
-         els_id_list <- format_response_get_els_id(search_result),
-         1 <- length(els_id_list) do
+    search_result = tirexs_search(document, [{key, value}])
+    els_id_list = format_response_get_els_id(search_result)
+    if length(els_id_list) >= 1 do
       List.first(els_id_list)
-    else
-      _ -> :not_found
     end
   end
 

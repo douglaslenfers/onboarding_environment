@@ -39,13 +39,13 @@ defmodule ToolsChallenge.Products do
   Raises `Ecto.NoResultsError` if the Product does not exist.
   """
   def get_product!(id) do
-    case get_product(id) do
+    case Redis.get(id) do
       {:ok, product} ->
         product
 
       {:error, :not_found} ->
         product = Repo.get!(Product, id)
-        set_product(id, product)
+        Redis.set(id, product)
         product
 
       _ ->
@@ -89,14 +89,6 @@ defmodule ToolsChallenge.Products do
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
-  end
-
-  defp set_product(id, product) do
-    Redis.set(id, product)
-  end
-
-  defp get_product(id) do
-    Redis.get(id)
   end
 
   defp search_elasticsearch([{_key, _value} | _] = filters) do
