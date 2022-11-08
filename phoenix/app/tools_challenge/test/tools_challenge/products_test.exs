@@ -1,8 +1,11 @@
 defmodule ToolsChallenge.ProductsTest do
   use ToolsChallenge.DataCase
 
+  import Mock
+
   alias ToolsChallenge.Products
   alias ToolsChallenge.Products.Product
+  alias ToolsChallenge.Services.Elasticsearch
 
   @valid_attrs %{sku: "some sku", description: "some description", name: "some name", price: 120.5, quantity: 42}
   @update_attrs %{sku: "some updated sku", description: "some updated description", name: "some updated name", price: 456.7, quantity: 43}
@@ -17,9 +20,19 @@ defmodule ToolsChallenge.ProductsTest do
   end
 
   describe "list products" do
+    setup [:clear_elasticsearch]
+
     test "returns all products" do
       product = product_fixture()
-      assert Products.list_products("") == [product]
+
+      product_attrs = Product.get_attrs(product)
+
+      with_mock Elasticsearch,
+        list: fn
+          _path -> {:ok, [product_attrs]}
+        end do
+        assert Products.list_products("") == [product_attrs]
+      end
     end
   end
 
@@ -76,5 +89,10 @@ defmodule ToolsChallenge.ProductsTest do
       product = product_fixture()
       assert %Ecto.Changeset{} = Products.change_product(product)
     end
+  end
+
+  defp clear_elasticsearch(_) do
+    Elasticsearch.clear()
+    :ok
   end
 end
