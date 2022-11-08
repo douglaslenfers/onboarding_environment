@@ -24,15 +24,12 @@ defmodule ToolsChallenge.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import ToolsChallenge.DataCase
+      import ToolsChallenge.Products.Product
     end
   end
 
   setup tags do
-    #:ok = Ecto.Adapters.SQL.Sandbox.checkout(ToolsChallenge.Repo)
-
-    #unless tags[:async] do
-    #  Ecto.Adapters.SQL.Sandbox.mode(ToolsChallenge.Repo, {:shared, self()})
-    #end
+    ToolsChallenge.Repo.delete_all(ToolsChallenge.Products.Product)
 
     :ok
   end
