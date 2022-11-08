@@ -7,9 +7,32 @@ defmodule ToolsChallenge.ProductsTest do
   alias ToolsChallenge.Products.Product
   alias ToolsChallenge.Services.Elasticsearch
 
-  @valid_attrs %{sku: "some sku", description: "some description", name: "some name", price: 120.5, quantity: 42}
-  @update_attrs %{sku: "some updated sku", description: "some updated description", name: "some updated name", price: 456.7, quantity: 43}
-  @invalid_attrs %{sku: nil, description: nil, name: nil, price: nil, quantity: nil}
+  @valid_attrs %{
+    sku: "ABC-123",
+    description: "some description",
+    name: "some name",
+    price: 120.5,
+    quantity: 42,
+    barcode: "123456789"
+  }
+
+  @update_attrs %{
+    sku: "321-BCA",
+    description: "some updated description",
+    name: "some updated name",
+    price: 456.7,
+    quantity: 43,
+    barcode: "987654321"
+  }
+
+  @invalid_attrs %{
+    sku: nil,
+    description: nil,
+    name: nil,
+    price: nil,
+    quantity: nil,
+    barcode: nil
+  }
 
   def product_fixture(attrs \\ %{}) do
     {:ok, product} =
@@ -46,11 +69,12 @@ defmodule ToolsChallenge.ProductsTest do
   describe "create_product" do
     test "with valid data creates a product" do
       assert {:ok, %Product{} = product} = Products.create_product(@valid_attrs)
-      assert product.sku == "some sku"
+      assert product.sku == "ABC-123"
       assert product.description == "some description"
       assert product.name == "some name"
       assert product.price == 120.5
       assert product.quantity == 42
+      assert product.barcode == "123456789"
     end
 
     test "with invalid data returns error changeset" do
@@ -62,11 +86,12 @@ defmodule ToolsChallenge.ProductsTest do
     test "with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = Products.update_product(product, @update_attrs)
-      assert product.sku == "some updated sku"
+      assert product.sku == "321-BCA"
       assert product.description == "some updated description"
       assert product.name == "some updated name"
       assert product.price == 456.7
       assert product.quantity == 43
+      assert product.barcode == "987654321"
     end
 
     test "with invalid data returns error changeset" do
