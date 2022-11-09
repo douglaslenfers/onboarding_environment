@@ -121,6 +121,17 @@ defmodule ToolsChallenge.ProductsTest do
       assert {:error, response} = Products.create_product(product)
       assert response.errors == expected_errors
     end
+
+    test "with sku invalid returns error changeset" do
+      product = %{@valid_attrs | sku: "ABC 123"}
+
+      expected_errors = [
+        sku: {"should be only alphanumerics and hifen", []}
+      ]
+
+      assert {:error, response} = Products.create_product(product)
+      assert response.errors == expected_errors
+    end
   end
 
   describe "update_product" do
@@ -182,6 +193,18 @@ defmodule ToolsChallenge.ProductsTest do
       ]
 
       new_attrs = %{@valid_attrs | barcode: "123456789101112"}
+      assert {:error, response} = Products.update_product(product, new_attrs)
+      assert response.errors == expected_errors
+    end
+
+    test "with sku invalid returns error changeset" do
+      product = product_fixture()
+
+      expected_errors = [
+        sku: {"should be only alphanumerics and hifen", []}
+      ]
+
+      new_attrs = %{@valid_attrs | sku: "ABC 123"}
       assert {:error, response} = Products.update_product(product, new_attrs)
       assert response.errors == expected_errors
     end
