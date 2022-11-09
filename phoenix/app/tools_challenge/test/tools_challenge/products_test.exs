@@ -99,6 +99,32 @@ defmodule ToolsChallenge.ProductsTest do
       assert {:error, response} = Products.create_product(product)
       assert response.errors == expected_errors
     end
+
+    test "with barcode less than 8 characters" do
+      product = %{@valid_attrs | barcode: "1234567"}
+
+      expected_errors = [
+        barcode:
+          {"should be at least %{count} character(s)",
+           [count: 8]}
+      ]
+
+      assert {:error, response} = Products.create_product(product)
+      assert response.errors == expected_errors
+    end
+
+    test "with barcode more than 13 characters" do
+      product = %{@valid_attrs | barcode: "123456789101112"}
+
+      expected_errors = [
+        barcode:
+          {"should be at most %{count} character(s)",
+           [count: 13]}
+      ]
+
+      assert {:error, response} = Products.create_product(product)
+      assert response.errors == expected_errors
+    end
   end
 
   describe "update_product" do
@@ -136,6 +162,34 @@ defmodule ToolsChallenge.ProductsTest do
       ]
 
       new_attrs = %{@valid_attrs | price: 0}
+      assert {:error, response} = Products.update_product(product, new_attrs)
+      assert response.errors == expected_errors
+    end
+
+    test "with barcode less than 8 characters" do
+      product = product_fixture()
+
+      expected_errors = [
+        barcode:
+          {"should be at least %{count} character(s)",
+           [count: 8]}
+      ]
+
+      new_attrs = %{@valid_attrs | barcode: "1234567"}
+      assert {:error, response} = Products.update_product(product, new_attrs)
+      assert response.errors == expected_errors
+    end
+
+    test "with barcode more than 13 characters" do
+      product = product_fixture()
+
+      expected_errors = [
+        barcode:
+          {"should be at most %{count} character(s)",
+           [count: 13]}
+      ]
+
+      new_attrs = %{@valid_attrs | barcode: "123456789101112"}
       assert {:error, response} = Products.update_product(product, new_attrs)
       assert response.errors == expected_errors
     end
