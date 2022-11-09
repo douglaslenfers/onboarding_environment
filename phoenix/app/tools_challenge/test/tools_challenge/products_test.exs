@@ -88,6 +88,17 @@ defmodule ToolsChallenge.ProductsTest do
       assert {:error, response} = Products.create_product(@invalid_attrs)
       assert response.errors == expected_errors
     end
+
+    test "with price not greater than zero" do
+      product = %{@valid_attrs | price: 0}
+
+      expected_errors = [
+        price: {"must be greater than %{number}", [number: 0]}
+      ]
+
+      assert {:error, response} = Products.create_product(product)
+      assert response.errors == expected_errors
+    end
   end
 
   describe "update_product" do
@@ -115,6 +126,18 @@ defmodule ToolsChallenge.ProductsTest do
       assert {:error, response} = Products.update_product(product, @invalid_attrs)
       assert response.errors == expected_errors
       assert product == Products.get_product!(product.id)
+    end
+
+    test "with price not greater than zero" do
+      product = product_fixture()
+
+      expected_errors = [
+        price: {"must be greater than %{number}", [number: 0]}
+      ]
+
+      new_attrs = %{@valid_attrs | price: 0}
+      assert {:error, response} = Products.update_product(product, new_attrs)
+      assert response.errors == expected_errors
     end
   end
 
