@@ -89,7 +89,7 @@ defmodule ToolsChallenge.ProductsTest do
       assert response.errors == expected_errors
     end
 
-    test "with price not greater than zero" do
+    test "with price not greater than zero returns error changeset" do
       product = %{@valid_attrs | price: 0}
 
       expected_errors = [
@@ -100,26 +100,22 @@ defmodule ToolsChallenge.ProductsTest do
       assert response.errors == expected_errors
     end
 
-    test "with barcode less than 8 characters" do
+    test "with barcode less than 8 characters returns error changeset" do
       product = %{@valid_attrs | barcode: "1234567"}
 
       expected_errors = [
-        barcode:
-          {"should be at least %{count} character(s)",
-           [count: 8]}
+        barcode: {"should be at least %{count} character(s)", [count: 8]}
       ]
 
       assert {:error, response} = Products.create_product(product)
       assert response.errors == expected_errors
     end
 
-    test "with barcode more than 13 characters" do
+    test "with barcode more than 13 characters returns error changeset" do
       product = %{@valid_attrs | barcode: "123456789101112"}
 
       expected_errors = [
-        barcode:
-          {"should be at most %{count} character(s)",
-           [count: 13]}
+        barcode: {"should be at most %{count} character(s)", [count: 13]}
       ]
 
       assert {:error, response} = Products.create_product(product)
@@ -154,7 +150,7 @@ defmodule ToolsChallenge.ProductsTest do
       assert product == Products.get_product!(product.id)
     end
 
-    test "with price not greater than zero" do
+    test "with price not greater than zero returns error changeset" do
       product = product_fixture()
 
       expected_errors = [
@@ -166,13 +162,11 @@ defmodule ToolsChallenge.ProductsTest do
       assert response.errors == expected_errors
     end
 
-    test "with barcode less than 8 characters" do
+    test "with barcode less than 8 characters returns error changeset" do
       product = product_fixture()
 
       expected_errors = [
-        barcode:
-          {"should be at least %{count} character(s)",
-           [count: 8]}
+        barcode: {"should be at least %{count} character(s)", [count: 8]}
       ]
 
       new_attrs = %{@valid_attrs | barcode: "1234567"}
@@ -180,13 +174,11 @@ defmodule ToolsChallenge.ProductsTest do
       assert response.errors == expected_errors
     end
 
-    test "with barcode more than 13 characters" do
+    test "with barcode more than 13 characters returns error changeset" do
       product = product_fixture()
 
       expected_errors = [
-        barcode:
-          {"should be at most %{count} character(s)",
-           [count: 13]}
+        barcode: {"should be at most %{count} character(s)", [count: 13]}
       ]
 
       new_attrs = %{@valid_attrs | barcode: "123456789101112"}
