@@ -23,6 +23,7 @@ defmodule ToolsChallenge.Products.Product do
     |> cast(attrs, [:sku, :name, :description, :quantity, :price, :barcode])
     |> validate_required([:sku, :name, :price, :barcode])
     |> validate_length(:description, max: 255)
+    |> validate_length(:barcode, min: 8, max: 13)
     |> validate_number(:price, greater_than: 0)
   end
 
