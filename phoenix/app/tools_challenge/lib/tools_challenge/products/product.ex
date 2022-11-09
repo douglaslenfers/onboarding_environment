@@ -25,6 +25,7 @@ defmodule ToolsChallenge.Products.Product do
     |> validate_length(:description, max: 255)
     |> validate_length(:barcode, min: 8, max: 13)
     |> validate_number(:price, greater_than: 0)
+    |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/, message: "should be only alphanumerics and hifen")
   end
 
   def get_attrs(product) do
