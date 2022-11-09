@@ -77,8 +77,16 @@ defmodule ToolsChallenge.ProductsTest do
       assert product.barcode == "123456789"
     end
 
-    test "with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Products.create_product(@invalid_attrs)
+    test "with blank data returns error changeset" do
+      expected_errors = [
+        sku: {"can't be blank", []},
+        name: {"can't be blank", []},
+        price: {"can't be blank", []},
+        barcode: {"can't be blank", []}
+      ]
+
+      assert {:error, response} = Products.create_product(@invalid_attrs)
+      assert response.errors == expected_errors
     end
   end
 
@@ -94,9 +102,18 @@ defmodule ToolsChallenge.ProductsTest do
       assert product.barcode == "987654321"
     end
 
-    test "with invalid data returns error changeset" do
+    test "with blank data returns error changeset" do
       product = product_fixture()
-      assert {:error, %Ecto.Changeset{}} = Products.update_product(product, @invalid_attrs)
+
+      expected_errors = [
+        sku: {"can't be blank", []},
+        name: {"can't be blank", []},
+        price: {"can't be blank", []},
+        barcode: {"can't be blank", []}
+      ]
+
+      assert {:error, response} = Products.update_product(product, @invalid_attrs)
+      assert response.errors == expected_errors
       assert product == Products.get_product!(product.id)
     end
   end
