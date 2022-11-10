@@ -58,9 +58,10 @@ defmodule ToolsChallenge.Products do
   """
   def create_product(attrs \\ %{}) do
     product_changeset = Product.changeset(%Product{}, attrs)
-    {:ok, product} = Repo.insert(product_changeset)
-    {:ok, :created} = post_elasticsearch(product)
-    {:ok, product}
+    with {:ok, product} <- Repo.insert(product_changeset),
+         {:ok, :created} <- post_elasticsearch(product) do
+      {:ok, product}
+    end
   end
 
   @doc """
@@ -68,10 +69,11 @@ defmodule ToolsChallenge.Products do
   """
   def update_product(%Product{} = product, attrs) do
     product_changeset = Product.changeset(product, attrs)
-    {:ok, updated_product} = Repo.update(product_changeset)
-    Product.get_attrs(updated_product)
-    |> update_elasticsearch()
-    {:ok, updated_product}
+    with {:ok, updated_prod} <- Repo.update(product_changeset),
+         attrs <- Product.get_attrs(updated_prod),
+         {:ok, 201, _} <- update_elasticsearch(attrs) do
+      {:ok, updated_prod}
+    end
   end
 
   @doc """
