@@ -10,6 +10,7 @@ defmodule ToolsChallenge.Products.Product do
     field :name, :string
     field :price, :float
     field :quantity, :integer
+    field :barcode, :string
 
     timestamps()
   end
@@ -19,9 +20,12 @@ defmodule ToolsChallenge.Products.Product do
     id = product.id
 
     product
-    |> cast(attrs, [:sku, :name, :description, :quantity, :price])
-    |> validate_required([:sku, :name])
+    |> cast(attrs, [:sku, :name, :description, :quantity, :price, :barcode])
+    |> validate_required([:sku, :name, :price, :barcode])
     |> validate_length(:description, max: 255)
+    |> validate_length(:barcode, min: 8, max: 13)
+    |> validate_number(:price, greater_than: 0)
+    |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/, message: "should be only alphanumerics and hifen")
   end
 
   def get_attrs(product) do
@@ -31,7 +35,8 @@ defmodule ToolsChallenge.Products.Product do
       name: product.name,
       description: product.description,
       quantity: product.quantity,
-      price: product.price
+      price: product.price,
+      barcode: product.barcode
     }
   end
 end

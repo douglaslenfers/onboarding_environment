@@ -26,9 +26,9 @@ defmodule ToolsChallenge.Products do
           query = from p in Product,
                     where: fragment(sku: ^regex)
 
-          Repo.all(query)
+          get_attrs_from_products(Repo.all(query))
         else
-          Repo.all(Product)
+          get_attrs_from_products(Repo.all(Product))
         end
     end
   end
@@ -58,8 +58,8 @@ defmodule ToolsChallenge.Products do
   """
   def create_product(attrs \\ %{}) do
     product_changeset = Product.changeset(%Product{}, attrs)
-    product = Repo.insert(product_changeset)
-    with {:ok, :created} <- post_elasticsearch(product) do
+    with {:ok, product} <- Repo.insert(product_changeset),
+         {:ok, :created} <- post_elasticsearch(product) do
       {:ok, product}
     end
   end
@@ -68,10 +68,12 @@ defmodule ToolsChallenge.Products do
   Updates a product.
   """
   def update_product(%Product{} = product, attrs) do
-    Product.changeset(product, attrs)
-    |> Repo.update()
-    |> Product.get_attrs()
-    |> update_elasticsearch()
+    product_changeset = Product.changeset(product, attrs)
+    with {:ok, updated_prod} <- Repo.update(product_changeset),
+         attrs <- Product.get_attrs(updated_prod),
+         {:ok, 201, _} <- update_elasticsearch(attrs) do
+      {:ok, updated_prod}
+    end
   end
 
   @doc """
@@ -108,4 +110,7 @@ defmodule ToolsChallenge.Products do
   defp delete_elasticsearch(%Product{} = product) do
     Elasticsearch.delete("products", "id", product.id)
   end
+
+  defp get_attrs_from_products([%Product{} | _] = products),
+    do: Enum.map(products, fn product -> Product.get_attrs(product) end)
 end

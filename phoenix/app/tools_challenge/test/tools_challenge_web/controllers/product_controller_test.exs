@@ -3,9 +3,32 @@ defmodule ToolsChallengeWeb.ProductControllerTest do
 
   alias ToolsChallenge.Products
 
-  @create_attrs %{sku: "some sku", description: "some description", name: "some name", price: 120.5, quantity: 42}
-  @update_attrs %{sku: "some updated sku", description: "some updated description", name: "some updated name", price: 456.7, quantity: 43}
-  @invalid_attrs %{sku: nil, description: nil, name: nil, price: nil, quantity: nil}
+  @create_attrs %{
+    sku: "ABC-123",
+    description: "some description",
+    name: "some name",
+    price: 120.5,
+    quantity: 42,
+    barcode: "12345678"
+  }
+
+  @update_attrs %{
+    sku: "321-CBA",
+    description: "some updated description",
+    name: "some updated name",
+    price: 456.7,
+    quantity: 43,
+    barcode: "123456789"
+  }
+
+  @invalid_attrs %{
+    sku: nil,
+    description: nil,
+    name: nil,
+    price: nil,
+    quantity: nil,
+    barcode: nil
+  }
 
   def fixture(:product) do
     {:ok, product} = Products.create_product(@create_attrs)
@@ -60,7 +83,7 @@ defmodule ToolsChallengeWeb.ProductControllerTest do
       assert redirected_to(conn) == Routes.product_path(conn, :show, product)
 
       conn = get(conn, Routes.product_path(conn, :show, product))
-      assert html_response(conn, 200) =~ "some updated sku"
+      assert html_response(conn, 200) =~ "321-CBA"
     end
 
     test "renders errors when data is invalid", %{conn: conn, product: product} do

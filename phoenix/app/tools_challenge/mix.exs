@@ -46,7 +46,8 @@ defmodule ToolsChallenge.MixProject do
       {:mime, "~> 1.6"},
       {:redis, "~> 0.1"},
       {:exredis, ">= 0.2.4"},
-      {:tirexs, "~> 0.8"}
+      {:tirexs, "~> 0.8"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 
@@ -61,7 +62,7 @@ defmodule ToolsChallenge.MixProject do
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "test"]
     ]
   end
 end
