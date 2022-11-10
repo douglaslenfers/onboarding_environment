@@ -59,7 +59,7 @@ defmodule ToolsChallenge.Services.Elasticsearch do
   defp find_els_id(document, key, value) do
     search_result = tirexs_search(document, [{key, value}])
     els_id_list = format_response_get_els_id(search_result)
-    with 1 <- length(els_id_list) do
+    if length(els_id_list) >= 1 do
       List.first(els_id_list)
     end
   end
