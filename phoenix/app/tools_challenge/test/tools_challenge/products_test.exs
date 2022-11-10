@@ -211,10 +211,28 @@ defmodule ToolsChallenge.ProductsTest do
   end
 
   describe "delete_product" do
-    test "deletes the product with correct id" do
+    test "when the product is correct" do
       product = product_fixture()
-      assert {:ok, %Product{}} = Products.delete_product(product)
-      assert_raise Ecto.NoResultsError, fn -> Products.get_product!(product.id) end
+
+      with_mock Elasticsearch,
+        delete: fn
+          _path, _key, _value -> :ok
+        end do
+        assert {:ok, %Product{}} = Products.delete_product(product)
+        assert_called(Elasticsearch.delete(:_, :_, :_))
+      end
+    end
+
+    test "without product returns error" do
+      product = product_fixture()
+
+      with_mock Elasticsearch,
+        delete: fn
+          _path, _key, _value -> :error
+        end do
+        Products.delete_product(product)
+        catch_error(Products.delete_product(product))
+      end
     end
   end
 
