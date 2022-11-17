@@ -20,7 +20,7 @@ defmodule ToolsChallenge.MixProject do
   def application do
     [
       mod: {ToolsChallenge.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto, :tirexs]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto, :tirexs, :exq]
     ]
   end
 
@@ -48,7 +48,10 @@ defmodule ToolsChallenge.MixProject do
       {:exredis, ">= 0.2.4"},
       {:tirexs, "~> 0.8"},
       {:mock, "~> 0.3.0", only: :test},
-      {:csv, "~> 3.0.3"}
+      {:csv, "~> 3.0.3"},
+      {:exq, "~> 0.16.2"},
+      {:exq_ui, "~> 0.11.1"},
+      {:poison, "~> 2.0"}
     ]
   end
 
