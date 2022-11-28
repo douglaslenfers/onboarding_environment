@@ -13,24 +13,11 @@ defmodule ToolsChallengeWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :exq do
-    plug(:accepts, ["html"])
-    plug(:fetch_session)
-    plug(:fetch_flash)
-    plug(:put_secure_browser_headers)
-    plug(ExqUi.RouterPlug, namespace: "exq")
-  end
-
   scope "/", ToolsChallengeWeb do
     pipe_through :browser
 
     get "/", ProductController, :index
     resources "/products", ProductController
-  end
-
-  scope "/exq", ExqUi do
-    pipe_through(:exq)
-    forward("/", RouterPlug.Router, :index)
   end
 
   if Mix.env() in [:dev, :test] do
