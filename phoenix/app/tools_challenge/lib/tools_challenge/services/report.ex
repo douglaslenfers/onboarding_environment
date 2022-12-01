@@ -31,7 +31,7 @@ defmodule ToolsChallenge.Services.Report do
   end
 
   defp enqueue_report(report_name) do
-    case Exq.enqueue(Exq, "report", Report, [report_name]) do
+    case Report.enqueue(report_name) do
       {:ok, _id} -> {:queued, "Report will be generated soon"}
       _error -> {:error, "Error to generate the report"}
     end
