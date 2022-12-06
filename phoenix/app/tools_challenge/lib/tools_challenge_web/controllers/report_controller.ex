@@ -1,13 +1,17 @@
 defmodule ToolsChallengeWeb.ReportController do
   use ToolsChallengeWeb, :controller
 
-  alias ToolsChallenge.Services.Report
+  alias ToolsChallenge.Services.ReportService
+  alias ToolsChallenge.Jobs.ReportJob
 
-  def index(conn, _params) do
-    case Report.request_report("products_report") do
-      {:ok, report_data} -> send_resp(conn, 202, report_data)
-      {:not_yet, message} -> send_resp(conn, 202, message)
-      {:error, error} -> send_resp(conn, 500, "")
+  def get_report(conn, _params) do
+    send_download(conn, {:file, ReportService.get_path()})
+  end
+
+  def equeue_report(conn, _params) do
+    case ReportJob.equeue() do
+      :ok -> send_resp(conn, 202, "")
+      _error -> send_resp(conn, 500, "")
     end
   end
 end

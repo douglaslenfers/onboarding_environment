@@ -18,7 +18,8 @@ defmodule ToolsChallengeWeb.Router do
 
     get "/", ProductController, :index
     resources "/products", ProductController
-    get "/report", ReportController, :index
+    get "/report", ReportController, :get_report
+    post "/report", ReportController, :equeue_report
   end
 
   if Mix.env() in [:dev, :test] do
