@@ -5,8 +5,8 @@ defmodule ToolsChallenge.ReportJobTest do
 
   alias ToolsChallenge.Products
   alias ToolsChallenge.Products.Product
-  alias ToolsChallenge.Services.{CsvExport, Redis, Elasticsearch}
-  alias ToolsChallenge.Jobs.Report
+  alias ToolsChallenge.Services.{CsvExport, Elasticsearch}
+  alias ToolsChallenge.Jobs.ReportJob
 
   @valid_attrs %{
     sku: "ABC-123",
@@ -26,9 +26,6 @@ defmodule ToolsChallenge.ReportJobTest do
   end
 
   setup_with_mocks([
-    {Redis, [],
-      set: fn _key, _data -> :ok end,
-      del: fn _key -> :ok end},
     {File, [], write: fn _path, _data -> :ok end}
   ]) do
     :ok
@@ -38,7 +35,7 @@ defmodule ToolsChallenge.ReportJobTest do
     setup [:clear_elasticsearch]
 
     test "successful when report generated" do
-      assert Report.perform("report_title") == :ok
+      assert ReportJob.perform() == :ok
     end
 
     test "convert products to csv format" do
@@ -55,19 +52,10 @@ defmodule ToolsChallenge.ReportJobTest do
         list: fn
           _path -> {:ok, [%{product_attrs | id: "636e633f8284b151ebfbb836"}]}
         end do
-        Report.perform("report_title")
+        ReportJob.perform()
 
         assert CsvExport.generate_csv() == expected_result
       end
-    end
-
-    test "update report status on redis" do
-      report_status_key = "report_title_status"
-
-      Report.perform("report_title")
-
-      assert_called(Redis.set(report_status_key, :generating))
-      assert_called(Redis.set(report_status_key, :completed))
     end
   end
 
