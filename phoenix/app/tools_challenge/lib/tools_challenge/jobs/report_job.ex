@@ -1,7 +1,7 @@
 defmodule ToolsChallenge.Jobs.ReportJob do
-  alias ToolsChallenge.Services.ReportService
+  alias ToolsChallenge.Services.CsvExport
 
   def perform() do
-    ReportService.request_report()
+    CsvExport.write_csv()
   end
 end

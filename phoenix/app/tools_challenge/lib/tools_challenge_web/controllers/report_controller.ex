@@ -1,11 +1,11 @@
 defmodule ToolsChallengeWeb.ReportController do
   use ToolsChallengeWeb, :controller
 
-  alias ToolsChallenge.Services.ReportService
+  alias ToolsChallenge.Services.CsvExport
   alias ToolsChallenge.Jobs.ReportJob
 
   def get_report(conn, _params) do
-    send_download(conn, {:file, ReportService.get_path()})
+    send_download(conn, {:file, CsvExport.get_path()})
   end
 
   def equeue_report(conn, _params) do
