@@ -53,8 +53,9 @@ defmodule ToolsChallenge.ReportJobTest do
           _path -> {:ok, [%{product_attrs | id: "636e633f8284b151ebfbb836"}]}
         end do
         ReportJob.perform()
+        {:ok, content} = File.read(CsvExport.get_path())
 
-        assert CsvExport.generate_csv() == expected_result
+        assert expected_result == content
       end
     end
   end
