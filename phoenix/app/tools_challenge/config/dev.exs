@@ -76,3 +76,5 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :tirexs, :uri, "http://127.0.0.1:9200"
+
+config :tools_challenge, :report_csv, path: "/tmp/product_report.csv"
