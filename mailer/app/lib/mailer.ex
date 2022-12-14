@@ -1,0 +1,2 @@
+defmodule Mailer do
+end
