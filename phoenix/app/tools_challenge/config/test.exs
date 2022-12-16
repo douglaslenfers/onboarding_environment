@@ -19,3 +19,5 @@ config :tools_challenge, ToolsChallengeWeb.Endpoint,
 config :logger, level: :warn
 
 config :tools_challenge, ToolsChallenge.Elasticsearch, index: "app_test"
+
+config :tools_challenge, :mailer_url, "http://127.0.0.1:4444/mailer"
