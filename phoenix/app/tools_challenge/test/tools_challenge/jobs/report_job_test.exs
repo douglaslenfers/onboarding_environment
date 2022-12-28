@@ -7,6 +7,7 @@ defmodule ToolsChallenge.ReportJobTest do
   alias ToolsChallenge.Products.Product
   alias ToolsChallenge.Services.{CsvExport, Elasticsearch}
   alias ToolsChallenge.Jobs.ReportJob
+  alias ToolsChallenge.Clients.MailerClient
 
   @valid_attrs %{
     sku: "ABC-123",
@@ -35,7 +36,11 @@ defmodule ToolsChallenge.ReportJobTest do
     setup [:clear_elasticsearch]
 
     test "successful when report generated" do
-      assert ReportJob.perform() == :ok
+      with_mock(MailerClient, [], send_report: fn -> {:ok, %HTTPoison.Response{}} end) do
+        ReportJob.perform()
+
+        assert_called(MailerClient.send_report())
+      end
     end
 
     test "convert products to csv format" do
@@ -48,12 +53,14 @@ defmodule ToolsChallenge.ReportJobTest do
 
       product_attrs = Product.get_attrs(product)
 
-      with_mock Elasticsearch,
-        list: fn
-          _path -> {:ok, [%{product_attrs | id: "636e633f8284b151ebfbb836"}]}
-        end do
+      with_mocks([
+        {Elasticsearch, [], list: fn _path -> {:ok, [%{product_attrs | id: "636e633f8284b151ebfbb836"}]} end},
+        {MailerClient, [], send_report: fn -> {:ok, %HTTPoison.Response{}} end}
+      ]) do
         ReportJob.perform()
         {:ok, content} = File.read(CsvExport.get_path())
+
+        assert_called(MailerClient.send_report())
 
         assert expected_result == content
       end

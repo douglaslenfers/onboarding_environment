@@ -1,9 +1,9 @@
-defmodule ToolsChallenge.MixProject do
+defmodule Mailer.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :tools_challenge,
+      app: :mailer,
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,8 +19,8 @@ defmodule ToolsChallenge.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {ToolsChallenge.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto, :tirexs, :task_bunny, :httpoison]
+      mod: {Mailer.Application, []},
+      extra_applications: [:logger, :runtime_tools, :bamboo]
     ]
   end
 
@@ -41,16 +41,9 @@ defmodule ToolsChallenge.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:ecto, "~> 2.0.0", github: "elixir-ecto/ecto", ref: "v2.0", override: true},
-      {:mongodb_ecto, github: "michalmuskala/mongodb_ecto", branch: "ecto-2"},
-      {:mime, "~> 1.6"},
-      {:redis, "~> 0.1"},
-      {:exredis, ">= 0.2.4"},
-      {:tirexs, "~> 0.8"},
+      {:bamboo, "~> 2.2.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:csv, "~> 3.0.3"},
-      {:task_bunny, "~> 0.3.2"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8", only: :test}
     ]
   end
 
@@ -62,10 +55,7 @@ defmodule ToolsChallenge.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "test"]
+      setup: ["deps.get", "cmd npm install --prefix assets"]
     ]
   end
 end
