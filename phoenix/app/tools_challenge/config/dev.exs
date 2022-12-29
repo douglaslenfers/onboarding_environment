@@ -80,3 +80,13 @@ config :tirexs, :uri, "http://127.0.0.1:9200"
 config :tools_challenge, :report_csv, path: "/tmp/product_report.csv"
 
 config :tools_challenge, :mailer_url, "http://127.0.0.1:4444/mailer"
+
+config :sentry,
+  dsn: "https://e9ffbfa88d0542c6a83743c7f1658640@sentry-ui.skyhub.com.br/38",
+  environment_name: Mix.env(),
+  included_environments: [:dev],
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  tags: %{
+    hostname: "#{System.get_env("ENVIRONMENT_NAME")}_#{System.get_env("HOSTNAME")}"
+  }
