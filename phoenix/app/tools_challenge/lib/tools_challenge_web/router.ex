@@ -1,4 +1,5 @@
 defmodule ToolsChallengeWeb.Router do
+  use Sentry.PlugCapture
   use ToolsChallengeWeb, :router
 
   pipeline :browser do
@@ -11,6 +12,7 @@ defmodule ToolsChallengeWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Sentry.PlugContext
   end
 
   scope "/", ToolsChallengeWeb do

@@ -53,3 +53,13 @@ config :logger, level: :info
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
 import_config "prod.secret.exs"
+
+config :sentry,
+  dsn: System.get_env("DSN"),
+  environment_name: Mix.env(),
+  included_environments: [:prod],
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  tags: %{
+    hostname: "#{System.get_env("ENVIRONMENT_NAME")}_#{System.get_env("HOSTNAME")}"
+  }

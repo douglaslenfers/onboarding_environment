@@ -50,7 +50,9 @@ defmodule ToolsChallenge.MixProject do
       {:mock, "~> 0.3.0", only: :test},
       {:csv, "~> 3.0.3"},
       {:task_bunny, "~> 0.3.2"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:sentry, "8.0.0"},
+      {:hackney, "~> 1.8"}
     ]
   end
 
