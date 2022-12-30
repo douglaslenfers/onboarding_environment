@@ -82,7 +82,7 @@ config :tools_challenge, :report_csv, path: "/tmp/product_report.csv"
 config :tools_challenge, :mailer_url, "http://127.0.0.1:4444/mailer"
 
 config :sentry,
-  dsn: "https://e9ffbfa88d0542c6a83743c7f1658640@sentry-ui.skyhub.com.br/38",
+  dsn: System.get_env("DSN"),
   environment_name: Mix.env(),
   included_environments: [:dev],
   enable_source_code_context: true,

@@ -55,7 +55,7 @@ config :logger, level: :info
 import_config "prod.secret.exs"
 
 config :sentry,
-  dsn: "https://e9ffbfa88d0542c6a83743c7f1658640@sentry-ui.skyhub.com.br/38",
+  dsn: System.get_env("DSN"),
   environment_name: Mix.env(),
   included_environments: [:prod],
   enable_source_code_context: true,
